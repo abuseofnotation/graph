@@ -1,0 +1,50 @@
+.info, .jsoninput, .json{
+ width:70%;
+ height:400px;
+ background-color:#F7F7F7;
+position:relative;
+}
+
+p{
+font:16px Arial, Helvetica, sans-serif;
+width:70%;
+}
+
+pre{
+font:16px;
+width:70%;
+}
+
+
+.block{
+
+ width:130px;
+    height:70px;
+	text-align: center;
+
+font:16px Arial, Helvetica, sans-serif;
+border: 1px solid #FFFFFF;
+
+position: absolute;
+ display: table;
+	}
+  
+  
+.level1{
+background-color:#248F8F;
+ color:#ffffff;
+}
+.level2{
+background-color:#FFFFF5;
+ color:	#000000;
+}
+.level3{
+background-color:#99CCFF;
+ color:	#2E3D4C;
+}
+
+
+.label{
+display: table-cell;
+vertical-align: middle;
+}

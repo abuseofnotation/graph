@@ -1,0 +1,164 @@
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <head>
+  <title>Graph</title>
+ 
+  <!-- <script type="text/javascript" src="jquery.min.js"></script>-->
+   <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="graph.css">
+  <script type="text/javascript" src="graph.js"></script>
+  </head>
+  <body>
+  
+  <!--"When you have a complex system you cannot show everything at once.  -->
+
+  
+<h1>First steps</h1>
+<p>One infographic is defined by a <a href="http://www.json.org/" target="_blank">JSON</a> array. The array contains the title of the infographic 
+  and a list of components, which will be presented in it as boxes.</p> 
+  <p>Here is an empty graphic</p>
+
+  <h3>Input:</h3>
+  <pre>["A Graphic"]</pre>
+ <h3>Output:</h3>
+ <div class="info">["A Graphic"]</div>
+  
+  
+ <p> A box is defined again by an array which <em>must</em> contain at least one element, the name of the box, but <em>can</em> contain a lot more.</p>
+    <h3>Input:</h3>
+  <pre>["A Graphic", ["A Box"]]</pre>
+ <h3>Output:</h3>
+ <div class="info">["A Graphic", ["A Box"]]</div>
+  
+
+  
+<h1>Setting Box Position</h1>
+  <p>The position of each box is a two-character string, which uses the convention used in the chess board (except that I don't play 
+  chess so the numbers are from top to bottom). For example "A1" positions the block at
+  the top left corner, "A2" is on the right of "A1" etc.<p>
+  
+  <p>The size of the board is calculated automatically and it can go up to 9.</p>
+  
+  <h3>Input:</h3>
+  <pre>["Box Position", 
+ ["A1", "A1"],
+ ["A2", "A2"],
+ ["A3", "A3"],
+
+ ["B1", "B1"],
+ ["B2", "B2"],
+ ["B3", "B3"],
+ ["C1", "C1"],
+ ["C2", "C2"],
+ ["C3", "C3"]
+]</pre>
+ <h3>Output:</h3>
+ <div class="info">["Box Position",
+ ["A1", "A1"],
+ ["A2", "A2"],
+ ["A3", "A3"],
+
+ ["B1", "B1"],
+ ["B2", "B2"],
+ ["B3", "B3"],
+ ["C1", "C1"],
+ ["C2", "C2"],
+ ["C3", "C3"]
+]</div>
+
+<h1>Children</h1>
+  <p>Components are composed of smaller components. 
+  In Graphs this is reflected by the ability for each box to have children which are shown only when the user clicks on it.<p>
+  <h3>Input:</h3>
+  <pre>["Children", 
+ ["A Parent", "a2", 
+   ["Child 1", "a2"],
+   ["Child 2", "b2"],
+   ["Child 3", "c2"]
+ ]
+
+]
+</pre>
+ <h3>Output:</h3>
+ <div class="info">["Children", 
+ ["A Parent", "a2", 
+   ["Child 1", "a2"],
+   ["Child 2", "b2"],
+   ["Child 3", "c2"]
+ ]
+
+]
+</div>
+  <p>You can have more than two levels. Each level has different CSS attributes<p>
+  <h3>Input:</h3>
+  <pre>["Children", 
+  ["First", 
+    ["Second",
+      ["Third"]
+    ]
+  ]
+] 
+
+<h1>Applying Styling</h1>
+  <p>Stress on a certain box by applying different CSS styling.</p>
+  <p>To add styling, include a property with one of the CSS styles which are defined as graphs constants: 'important', 'minor'</p>
+  
+  <h3>Input:</h3>
+  <pre>["Box Position", 
+ ["A1", "A1"],
+ ["A2", "A2"],
+ ["A3", "A3"],
+
+ ["B1", "B1"],
+ ["B2", "B2"],
+ ["B3", "B3"],
+ ["C1", "C1"],
+ ["C2", "C2"],
+ ["C3", "C3"]
+]</pre>
+ <h3>Output:</h3>
+ <div class="info">["Styling",
+ ["Ordinary Box1", "A1"],
+ ["Ordinary Box2", "A2"],
+ ["A very important box", "A3"],
+
+ ["Ordinary Box3", "B1"],
+ ["Ordinary Box4", "B2"],
+ ["Not Very Important Box", "B3"],
+
+]</div>
+
+
+
+
+</pre>
+ <h3>Output:</h3>
+ <div class="info">["Children", 
+  ["First", 
+    ["Second",
+      ["Third"]
+    ]
+  ]
+]
+</div>
+
+
+
+ <h1>Your Turn</h1>
+<p>Start typing to visualize the graphic.<p>
+
+  <h3>Input:</h3>
+
+<textarea id="json" class="json" >
+["root", 
+ ["block", "a1"],
+ ["block2", "a2"]
+]
+</textarea>
+
+  <h3>Output:</h3>
+<div class="jsoninput"></div>
+
+
+</form> 
+</body>
