@@ -4,6 +4,10 @@
  background-color:#F7F7F7;
 position:relative;
 }
+.json{
+width:70%;
+height:100px;
+}
 
 p{
 font:16px Arial, Helvetica, sans-serif;
@@ -23,25 +27,52 @@ width:70%;
 	text-align: center;
 
 font:16px Arial, Helvetica, sans-serif;
-border: 1px solid #FFFFFF;
+border:1px solid;
 
 position: absolute;
  display: table;
 	}
   
-  
+
 .level1{
-background-color:#248F8F;
+background-color:#3385AD;
  color:#ffffff;
+ border-color:#599CFF;
 }
+
+.level1_important{
+background-color:#1F5068;
+}
+
+.level1_minor{
+background-color:#7996A4;
+}
+
 .level2{
-background-color:#FFFFF5;
- color:	#000000;
+background-color:#FFFFCC;
+ border-color:#CC7A29;
+ color:#663D14;
 }
+.level2_important{
+background-color:#FFFF99;
+}
+.level2_minor{
+background-color:#FFFFFF;
+}
+
+
 .level3{
-background-color:#99CCFF;
+background-color:#D6EBFF;
  color:	#2E3D4C;
 }
+.level3_important{
+background-color:#99CCFF;
+}
+.level3_minor{
+background-color:#FCFEFF;
+}
+
+
 
 
 .label{

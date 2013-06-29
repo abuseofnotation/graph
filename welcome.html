@@ -66,12 +66,35 @@
  ["C3", "C3"]
 ]</div>
 
-<h1>Children</h1>
+<h1>Setting Box Size</h1>
+  <p>The size of the board is calculated automatically and it can go up to 9.</p>
+  
+  <h3>Input:</h3>
+  <pre>
+["Box Size", 
+ ["2X2", "A1", "2x2"],
+ ["1X1", "C1"],
+ ["1X2", "C2", "1X2"],
+ ["2X1", "A3", "2X1"]
+]
+</pre>
+ <h3>Output:</h3>
+ <div class="info">
+["Box Size", 
+ ["2X2", "A1", "2x2"],
+ ["1X1", "C1"],
+ ["1X2", "C2", "1X2"],
+ ["2X1", "A3", "2X1"]
+]
+</div>
+
+
+<h1>Adding Children</h1>
   <p>Components are composed of smaller components. 
   In Graphs this is reflected by the ability for each box to have children which are shown only when the user clicks on it.<p>
   <h3>Input:</h3>
   <pre>["Children", 
- ["A Parent", "a2", 
+ ["A Parent", "a1",
    ["Child 1", "a2"],
    ["Child 2", "b2"],
    ["Child 3", "c2"]
@@ -89,7 +112,7 @@
 
 ]
 </div>
-  <p>You can have more than two levels. Each level has different CSS attributes<p>
+  <p>You can have more than two levels. In each level has its own CSS styles<p>
   <h3>Input:</h3>
   <pre>["Children", 
   ["First", 
@@ -98,49 +121,92 @@
     ]
   ]
 ] 
-
-<h1>Applying Styling</h1>
-  <p>Stress on a certain box by applying different CSS styling.</p>
-  <p>To add styling, include a property with one of the CSS styles which are defined as graphs constants: 'important', 'minor'</p>
-  
-  <h3>Input:</h3>
-  <pre>["Box Position", 
- ["A1", "A1"],
- ["A2", "A2"],
- ["A3", "A3"],
-
- ["B1", "B1"],
- ["B2", "B2"],
- ["B3", "B3"],
- ["C1", "C1"],
- ["C2", "C2"],
- ["C3", "C3"]
-]</pre>
- <h3>Output:</h3>
- <div class="info">["Styling",
- ["Ordinary Box1", "A1"],
- ["Ordinary Box2", "A2"],
- ["A very important box", "A3"],
-
- ["Ordinary Box3", "B1"],
- ["Ordinary Box4", "B2"],
- ["Not Very Important Box", "B3"],
-
-]</div>
-
-
-
-
 </pre>
- <h3>Output:</h3>
- <div class="info">["Children", 
+  <h3>Output:</h3>
+  <div class="info">["Children", 
   ["First", 
     ["Second",
       ["Third"]
     ]
   ]
-]
+] 
 </div>
+<h1>Applying CSS Styles</h1>
+  <p>Put a stress on a certain box by applying different CSS style.</p>
+  <p>To change the box styling, include a one of the semantic 
+styling properties which are defined as constants in Graph: <b>important</b> and <b>minor</b></p>
+  
+  <h3>Input:</h3>
+  <pre>["Styling",
+ ["Ordinary Box1", "A1"],
+ ["A very important box", "A2", "important"],
+ ["Ordinary Box2", "A3"],
+ ["Ordinary Box3", "B1"],
+ ["Ordinary Box4", "B2"],
+ ["Not So Important Box", "B3", "minor"]
+]</pre>
+ <h3>Output:</h3>
+ <div class="info">
+["Styling",
+ ["Ordinary Box1", "A1"],
+ ["A very important box", "A2", "important"],
+ ["Ordinary Box2", "A3"],
+ ["Ordinary Box3", "B1"],
+ ["Ordinary Box4", "B2"],
+ ["Not So Important Box", "B3", "minor"]
+]</div>
+
+  <p>One semantic styling property corresponds two several CSS styles, one
+  for each of the levels of the diagram:</p>
+  
+  <h3>Input:</h3>
+  <pre>
+["Level-Aware Styling",
+ ["Ordinary Box from Level One", "A1","2X1"],
+ ["Important Box from Level One", "A2", "important","2X1",
+  ["Ordinary Box from Level Two", "A1","2X1"],
+  ["Important Box from Level Two", "A2", "important","2X1"]
+ ]
+]
+</pre>
+ <h3>Output:</h3>
+ <div class="info">
+["Level-Aware Styling",
+ ["Ordinary Box from Level One", "A1","2X1"],
+ ["Important Box from Level One", "A2", "important","2X1",
+  ["Ordinary Box from Level Two", "A1","2X1"],
+  ["Important Box from Level Two", "A2", "important","2X1"]
+ ]
+] </div>
+<p>You can add a styling property of your own: Declare it in the 
+'css_styles' array and define CSS styles for it.</p>
+<h1>Applying Special Styles</h1>
+  <p>Put a stress on a certain box by applying different CSS style.</p>
+
+  <p>One semantic styling property corresponds two several CSS styles, one
+  for each of the levels of the diagram:</p>
+  
+  <h3>Input:</h3>
+  <pre>
+["Transparency",
+ ["Normal Box"],
+ ["Transparent Box", "A2", "transparent",
+  ["You can...", "A1"],
+  ["...see this", "b1"]
+ ]
+] 
+</pre>
+ <h3>Output:</h3>
+ <div class="info">
+["Transparency",
+ ["Round Box", "circle"],
+ ["Transparent Box", "A2", "transparent",
+  ["You can...", "A1"],
+  ["...see this", "b1"]
+ ]
+]  </div>
+
+
 
 
 
@@ -158,7 +224,23 @@
 
   <h3>Output:</h3>
 <div class="jsoninput"></div>
-
-
+  <h1>Examples</h1>
+ <div class="info">
+["mBS ", 
+ ["Developer Workstation", "a1", "2x3",
+  ["mToolkit","a1", "3x1"],
+  ["mbProfiler", "a2", "3x1"],
+  ["System Plugins","a3", "3x1"]
+ ],
+ ["Home Gateway", "c1", "2x3",
+  ["mBS", "2X3",
+   ["mBS Modules","a1","1X2"],
+   ["OSGi Platform","b1", "1x2"]
+  ],
+  ["Java VM", "1X3", "c1"]
+ ],
+ ["Runtime Validator", "a4", "4x1", "minor"]
+]
+</div>
 </form> 
 </body>
