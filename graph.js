@@ -1,11 +1,14 @@
 //---------------Settings----------------
+var headingsize = 1
 var margin = 0.2
-var airmargin = 1
-var speed = 300
-var headingsize = 1.2
+var margin_top_bottom = 0.02
+var margin_sides = 0.02
+var text_margin =0.5
+var speed = 200
+
 var debug = false
 var css_styles = ["important", "minor"]
-var special_styles = ["transparent", "circle"]
+var special_styles = ["transparent", "rounded"]
 
 $(document).ready(function () {
 	$(".info").each(function () {
@@ -41,6 +44,7 @@ function mesmerize(canvas, input) {
 		current.parent.go_to();
 		return false;
 	});
+	
 	//---------------The Block class----------------
 	//constructor
 	var Block = function (id, x, y, h, w, blocks_plain, css_style, special_style) {
@@ -154,17 +158,23 @@ function mesmerize(canvas, input) {
 		}
 		//Moving of the box:
 		this.div.style.display = "table"
-		$("#" + this.div.id, canvas).animate({
+		
+		style={
 			left: "0px",
 			top: "0px",
 			height: this.height + "px",
 			width: this.width + "px",
 			opacity: 1,
-		}, speed);
+		}
+		if (this.special_style === special_styles[1]) {style.borderRadius =  this.height/ 4 + "px"}
+		
+		$("#" + this.div.id, canvas).animate(style, speed);
 		//Making its label bigger
 		$(this.heading, canvas).animate({
 			fontSize: Math.round(this.width / 10 * headingsize) + "px",
-			marginTop: Math.round(this.height / 2 - this.width / 10 * headingsize) + "px",
+			//marginTop: Math.round(this.height / 2 - this.width / 10 * headingsize) + "px",
+			paddingLeft: Math.round(this.width / 10 * text_margin),
+			paddingRight: Math.round(this.width / 10 * text_margin),
 			opacity: 0.3
 		}, speed);
 		//if the box has children we must draw them:
@@ -180,21 +190,27 @@ function mesmerize(canvas, input) {
 	//draws the boxes in a graphic
 	Block.prototype.drawchild = function (parent_div, invisible) {
 		this.div.style.display = "table"
-		var width = this.parent.width
-		var height = this.parent.height
+		var width = this.parent.width - this.parent.width*margin_sides*2
+		var height = this.parent.height- this.parent.height*margin_top_bottom*2
 		var scale = this.scale
 		var x = this.x
 		var y = this.y
 		//some calculations in order to get the block's proportions
 		columnwidth = Math.round(width / scale)
-		widthmargin = Math.round(margin * columnwidth)
-		this.width = columnwidth*this.w - widthmargin
-		left = columnwidth * y
 		rowheight = Math.round(height / scale)
-		heightmargin = Math.round(margin * rowheight)
+		
+		widthmargin = heightmargin = Math.round(margin * (columnwidth + rowheight)/2)		
+
+		this.width = columnwidth*this.w - widthmargin
+		left = columnwidth * y + this.parent.width*margin_sides 
+		this.left = left + widthmargin / 2
+		
 		this.height = rowheight*this.h - heightmargin
-		down = rowheight * x
-		//After we know when the block should be placed, we can do the actual moving:
+		down = rowheight * x + this.parent.height*margin_top_bottom
+		this.down = down + heightmargin / 2
+		
+		
+		//Moving of the box:
 		var style = new Object({
 			height: Math.round(this.height) + "px",
 			width: Math.round(this.width) + "px",
@@ -204,16 +220,22 @@ function mesmerize(canvas, input) {
 		} else {
 			style.opacity = 0
 		}
-		style.left = left + widthmargin / 2 + "px"
-		style.top = down + heightmargin / 2 + "px"
+		style.left = Math.round(this.left) + "px"
+		style.top = Math.round(this.down) + "px"
+		
+		if (this.special_style === special_styles[1]) {style.borderRadius =  rowheight/ 4 + "px"}
+		
 		$("#" + this.div.id, canvas).animate(style, speed, function () {
 			if (invisible === true) {
 				$(this).css("display", "none")
 			}
 		});
+		//Making its label bigger
 		$(this.heading).animate({
-			fontSize: Math.round(this.width / 10 * headingsize) + "px",
-			marginTop: Math.round(this.height / 2 - this.width / 10 * headingsize) + "px",
+			fontSize: Math.round(columnwidth / 10 * headingsize) + "px",
+			//marginTop: Math.round(this.height / 2 - columnwidth / 10 * headingsize) + "px",
+			paddingLeft: Math.round(columnwidth / 10 * text_margin),
+			paddingRight: Math.round(columnwidth / 10 * text_margin),
 			opacity: 1
 		}, speed);
 		if (debug) {
@@ -233,8 +255,8 @@ function mesmerize(canvas, input) {
 			}
 		}
 	}
-	//connects the blocks
-	Block.prototype.connect = function (targetblock) {}
+	
+	
 	//---------------Parsing input----------------
 
 	function parseBlock(blockarray) {

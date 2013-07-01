@@ -1,22 +1,26 @@
 .info, .jsoninput, .json{
  width:70%;
+ max-width:1000px;
  height:400px;
  background-color:#F7F7F7;
 position:relative;
 }
 .json{
 width:70%;
+max-width:1000px;
 height:100px;
 }
 
 p{
 font:16px Arial, Helvetica, sans-serif;
 width:70%;
+ max-width:1000px;
 }
 
 pre{
 font:16px;
 width:70%;
+ max-width:1000px;
 }
 
 
@@ -27,17 +31,25 @@ width:70%;
 	text-align: center;
 
 font:16px Arial, Helvetica, sans-serif;
-border:1px solid;
+border:1px solid #ccc;
 
 position: absolute;
  display: table;
+
+
+    -webkit-box-shadow: 0 8px 6px -6px rgba(50, 50, 50, 0.24);
+	   -moz-box-shadow: 0 8px 6px -6px rgba(50, 50, 50, 0.24);
+	        box-shadow: 0 8px 6px -6px rgba(50, 50, 50, 0.24);
+
+
 	}
   
 
 .level1{
 background-color:#3385AD;
  color:#ffffff;
- border-color:#599CFF;
+ border-color:#7AB0FF;
+ text-shadow: -1px -1px #7AB0FF, 1px 1px #333;
 }
 
 .level1_important{
@@ -52,6 +64,7 @@ background-color:#7996A4;
 background-color:#FFFFCC;
  border-color:#CC7A29;
  color:#663D14;
+  text-shadow: -1px -1px #CC7A29, 1px 1px #333;
 }
 .level2_important{
 background-color:#FFFF99;
@@ -64,6 +77,8 @@ background-color:#FFFFFF;
 .level3{
 background-color:#D6EBFF;
  color:	#2E3D4C;
+ border-color:#3385AD;
+ text-shadow: -1px -1px #3385AD, 1px 1px #333;
 }
 .level3_important{
 background-color:#99CCFF;

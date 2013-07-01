@@ -33,9 +33,9 @@
 
   
 <h1>Setting Box Position</h1>
-  <p>The position of each box is a two-character string, which uses the convention used in the chess board (except that I don't play 
+  <p>The position of each box is a two-character string. It which uses the same convention from the chess board (except that I don't play 
   chess so the numbers are from top to bottom). For example "A1" positions the block at
-  the top left corner, "A2" is on the right of "A1" etc.<p>
+  the top left corner, "A2" is on the right etc.<p>
   
   <p>The size of the board is calculated automatically and it can go up to 9.</p>
   
@@ -67,7 +67,7 @@
 ]</div>
 
 <h1>Setting Box Size</h1>
-  <p>The size of the board is calculated automatically and it can go up to 9.</p>
+  <p>The size of the board is calculated automatically and can go up to 9.</p>
   
   <h3>Input:</h3>
   <pre>
@@ -91,7 +91,7 @@
 
 <h1>Adding Children</h1>
   <p>Components are composed of smaller components. 
-  In Graphs this is reflected by the ability for each box to have children which are shown only when the user clicks on it.<p>
+  In Graphs this is reflected by the ability for each box to have children. You can display the box's children by clicking on it.<p>
   <h3>Input:</h3>
   <pre>["Children", 
  ["A Parent", "a1",
@@ -133,11 +133,12 @@
 </div>
 <h1>Applying CSS Styles</h1>
   <p>Put a stress on a certain box by applying different CSS style.</p>
+  <p>With CSS, you can apply CSS effects and change such attributes as the colors of the box and the text in it, the size of the font.</p>
   <p>To change the box styling, include a one of the semantic 
 styling properties which are defined as constants in Graph: <b>important</b> and <b>minor</b></p>
   
   <h3>Input:</h3>
-  <pre>["Styling",
+  <pre>["CSS Styling",
  ["Ordinary Box1", "A1"],
  ["A very important box", "A2", "important"],
  ["Ordinary Box2", "A3"],
@@ -147,7 +148,7 @@ styling properties which are defined as constants in Graph: <b>important</b> and
 ]</pre>
  <h3>Output:</h3>
  <div class="info">
-["Styling",
+["CSS Styling",
  ["Ordinary Box1", "A1"],
  ["A very important box", "A2", "important"],
  ["Ordinary Box2", "A3"],
@@ -179,31 +180,35 @@ styling properties which are defined as constants in Graph: <b>important</b> and
  ]
 ] </div>
 <p>You can add a styling property of your own: Declare it in the 
-'css_styles' array and define CSS styles for it.</p>
+'css_styles' array and define CSS rules for it.</p>
 <h1>Applying Special Styles</h1>
-  <p>Put a stress on a certain box by applying different CSS style.</p>
-
-  <p>One semantic styling property corresponds two several CSS styles, one
-  for each of the levels of the diagram:</p>
+  <p>Special styles are again box styles which can be used in paralel with the CSS styles:
+  </p>
+  <ul>
+	<li><b>transparent</b> box. You can see its children.</p>
+	<li><b>rounded</b> corners.</p>
+</ul> 
+ <h3>Input:</h3>
   
-  <h3>Input:</h3>
   <pre>
-["Transparency",
- ["Normal Box"],
- ["Transparent Box", "A2", "transparent",
+["Special Styles",
+ ["Transparent Box", "A1", "2x1", "transparent",
   ["You can...", "A1"],
   ["...see this", "b1"]
- ]
+ ],
+ ["Rounded Box", "rounded", "A2"],
+ ["Rounded and Important Box", "B2", "rounded", "important"]
 ] 
 </pre>
  <h3>Output:</h3>
  <div class="info">
-["Transparency",
- ["Round Box", "circle"],
- ["Transparent Box", "A2", "transparent",
+["Special Styles",
+ ["Transparent Box", "A1", "2x1", "transparent",
   ["You can...", "A1"],
   ["...see this", "b1"]
- ]
+ ],
+ ["Rounded Box", "rounded", "A2"],
+ ["Rounded and Important Box", "B2", "rounded", "important"]
 ]  </div>
 
 
@@ -225,6 +230,25 @@ styling properties which are defined as constants in Graph: <b>important</b> and
   <h3>Output:</h3>
 <div class="jsoninput"></div>
   <h1>Examples</h1>
+   <h3>Input:</h3>
+ <pre>
+ ["mBS ", 
+ ["Developer Workstation", "a1", "2x3",
+  ["mToolkit","a1", "3x1"],
+  ["mbProfiler", "a2", "3x1"],
+  ["System Plugins","a3", "3x1"]
+ ],
+ ["Home Gateway", "c1", "2x3",
+  ["mBS", "2X3",
+   ["mBS Modules","a1","1X2"],
+   ["OSGi Platform","b1", "1x2"]
+  ],
+  ["Java VM", "1X3", "c1"]
+ ],
+ ["Runtime Validator", "a4", "4x1", "minor"]
+]
+</pre>
+   <h3>Output:</h3>
  <div class="info">
 ["mBS ", 
  ["Developer Workstation", "a1", "2x3",
