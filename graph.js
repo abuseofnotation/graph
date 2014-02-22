@@ -10,6 +10,8 @@ var debug = false
 var css_styles = ["important", "minor"]
 var special_styles = ["transparent", "rounded"]
 
+var arrow = "connect"
+
 $(document).ready(function () {
 	$(".info").each(function () {
 		mesmerize($(this), $.parseJSON($(this).html()))
@@ -39,15 +41,15 @@ function mesmerize(canvas, input) {
 			}
 		}
 
-		//---------------Right Click----------------
+//---------------Right Click----------------
 	canvas.bind("contextmenu", function (e) {
 		current.parent.go_to();
 		return false;
 	});
 	
-	//---------------The Block class----------------
+//---------------The Block class----------------
 	//constructor
-	var Block = function (id, x, y, h, w, blocks_plain, css_style, special_style) {
+	var Block = function (id, x, y, h, w, blocks_arrows, css_style, special_style) {
 		//name/id
 		this.id = id;
 		//CSS style
@@ -55,31 +57,29 @@ function mesmerize(canvas, input) {
 		//special style
 		this.special_style = special_style;
 		//coordinates
-		this.x = x;
-		this.y = y;
+		this.x = x;//vertical
+		this.y = y;//horizontal
 		//size
-		this.h = h;
-		this.w = w;
+		this.h = h;//height
+		this.w = w;//width
 		//children (not yet parsed)
-		this.blocks_plain = blocks_plain;
+		this.blocks_arrows = blocks_arrows;
 		//children (represented as Block objects)
 		blocks = new Array()
 		this.blocks = blocks;
-		arrows = new Array()
-		this.arrows = arrows;
+		arrowarray = new Array()
+		this.arrows = new Array()
 	}
-	Block.prototype.append = function (block) {
-		this.blocks.push(block)
-	}
+
 	//Initial rendering of the canvas. 
-	//A recursive function that is started one for each box
+	//A recursive function that is called once for each box
 	Block.prototype.render = function (scale, level) {
 		this.scale = scale
 		this.level = level
 		//creates the <div> elements for the box.
 		this.div = document.createElement("div");
 		this.div.id = this.id.replace(/[^a-z0-9]/gi, '_')
-		this.div.className = "level" + this.level + " level" + this.level + this.css_style + " block"
+		this.div.className = "block_level_" + this.level + " block_level_" + this.level + this.css_style + " block"
 		this.div.style.opacity = 0
 		this.div.style.display = "none"
 		if (scale === 0) {
@@ -92,6 +92,7 @@ function mesmerize(canvas, input) {
 		$(this.div).bind('click', function (event) {
 			draw(this.id)
 		})
+		
 		this.heading = document.createElement("div");
 		this.heading.setAttribute("class", "label");
 		this.heading.innerHTML = this.id;
@@ -99,13 +100,23 @@ function mesmerize(canvas, input) {
 		this.children = document.createElement("div");
 		this.div.appendChild(this.children);
 		this.children.id = this.id.replace(" ", "_") + "_blocks";
-		if (this.blocks_plain != null) {
+		
+		if (this.blocks_arrows != null) {
+		arrowarray=null
+		
 			//convert the input data to "Block" objects
-			for (var i = 0; i < this.blocks_plain.length; i++) {
-				this.append(parseBlock(this.blocks_plain[i]))
+			for (var i = 0; i < this.blocks_arrows.length; i++) {
+				if (this.blocks_arrows[i][0]===arrow){
+					arrowarray.push(this.blocks_arrows[i])}
+			  else {this.blocks.push(parseBlock(this.blocks_arrows[i]))}
 			}
+		if (arrowarray!==null){
+			for (var i = 0; i < arrowarray.length; i++) {
+				this.arrows=this.arrows.concat(parseArrows(arrowarray[i], this))		
+				}
+		}
 			//Determine the size of the canvas(how many columns and rows must be added
-			// on this level):
+			//on this level):
 			scale = 0
 			for (var i = 0; i < this.blocks.length; i++) {
 				if (scale < this.blocks[i].y+this.blocks[i].w-1) {
@@ -127,6 +138,8 @@ function mesmerize(canvas, input) {
 			}
 		}
 	}
+	
+	
 	//Called when the user clicks on a box. Makes it occupy the whole screen
 	Block.prototype.go_to = function () {
 		if (debug) {
@@ -139,8 +152,6 @@ function mesmerize(canvas, input) {
 		this.height = canvas.height();
 		//this makes the other boxes fade out, while our box takes the screen
 		if (current.parent) {
-			this.parent.div.style.marginLeft = "0px";
-			this.parent.div.style.marginTop = "0px";
 			neighbours = current.parent.blocks;
 			for (i = 0; i < neighbours.length; i++) {
 				if (neighbours[i] != current) {
@@ -154,6 +165,16 @@ function mesmerize(canvas, input) {
 						$(this).css("display", "none")
 					});
 				}
+			}
+
+			for (i = 0; i < current.parent.arrows.length; i++) {
+			console.log(current.parent.arrows[i])
+			 $(current.parent.arrows[i].div).animate(
+			 {opacity: 0, 
+			 height:0,
+			 width:0 
+			}, speed/4)
+	//	current.parent.arrows[i].div.style.opacity=0
 			}
 		}
 		//Moving of the box:
@@ -186,6 +207,14 @@ function mesmerize(canvas, input) {
 				}
 			}
 		}
+		
+		if (this.arrows != null) {
+		for (var i = 0; i < this.arrows.length; i++) {
+	
+		this.arrows[i].draw()
+		}
+		}
+		
 	}
 	//draws the boxes in a graphic
 	Block.prototype.drawchild = function (parent_div, invisible) {
@@ -206,8 +235,9 @@ function mesmerize(canvas, input) {
 		this.left = left + widthmargin / 2
 		
 		this.height = rowheight*this.h - heightmargin
-		down = rowheight * x + this.parent.height*margin_top_bottom
-		this.down = down + heightmargin / 2
+		tops = rowheight * x + this.parent.height*margin_top_bottom
+		
+		this.tops = tops + heightmargin / 2
 		
 		
 		//Moving of the box:
@@ -221,7 +251,7 @@ function mesmerize(canvas, input) {
 			style.opacity = 0
 		}
 		style.left = Math.round(this.left) + "px"
-		style.top = Math.round(this.down) + "px"
+		style.top = Math.round(this.tops) + "px"
 		
 		if (this.special_style === special_styles[1]) {style.borderRadius =  rowheight/ 4 + "px"}
 		
@@ -239,7 +269,7 @@ function mesmerize(canvas, input) {
 			opacity: 1
 		}, speed);
 		if (debug) {
-			console.log("animate " + this.div.id + "(left=" + left + " top=" + down)
+			console.log("animate " + this.div.id + "(left=" + left + " top=" + tops)
 		}
 		//If the box has a "transparent" property set, we want its children to be visible 
 		var isinvisible
@@ -255,16 +285,85 @@ function mesmerize(canvas, input) {
 			}
 		}
 	}
+	//---------------The Arrow class--------------
+var Arrow = function (from, to, parent) {
+
+			//Calculates some arrow paramethers:
+		var vertical //True for vertical arrow, false for horizontal
+        var direction//True for arrows that point down/right, false for up/left
+		var thin_short //For vertical arrows: the thinner box. For horizontal arrows: the shorter one.
+		var up_left//For vertical arrows: the upper box. For horizontal arrows: the one from the left.
+
+		if((from.x>=to.x&&from.x+from.h<=to.x+to.h)||(from.x<=to.x&&from.x+from.h>=to.x+to.h)){
+		vertical=false
+		} else if ((from.y>=to.y&&from.y+from.w<=to.y+to.w)||(from.y<=to.y&&from.y+from.w>=to.y+to.w)) {
+		vertical=true
+		}else{vertical=null;console.log("I cannot draw diagonal arrows");
+		return
+		}
+		
+		if (vertical){
+		if (from.w<=to.w){thin_short=from}else{thin_short=to}
+		if (from.x<to.x){direction=true;this.top_box=from;this.down_box=to} else{ direction=false;this.down_box=from;this.top_box=to}
+		
+		} else {
+		if (from.h<=to.h){thin_short=from}else{thin_short=to}
+		if (from.y<to.y){direction=true;this.left_box=from;this.right_box=to}else{direction=false;this.left_box=to;this.right_box=from} 
+		
+		}
+		//console.log("starting from "+thin_short.id+". "+"down/right= "+direction)
+	
+			//Creates a div for the arrow
+		this.div = document.createElement("div");
+		this.div.id = from.id+"to"+to.id.replace(/[^a-z0-9]/gi, '_')
+		this.div.className = "arrow arrow_level_"+(parent.level+1)
+		parent.children.appendChild(this.div)
+		
+		
+		this.vertical=vertical
+		this.direction=direction
+		this.thin_short=thin_short
+		}
+		
+	Arrow.prototype.draw = function () {
+	if (this.vertical!==null){
+	style={opacity: 1}
+		if (this.vertical){
+			style.top=(this.top_box.tops+this.top_box.height)
+			style.height=this.height=(this.down_box.tops-this.top_box.tops-this.top_box.height)
+			style.left=(this.thin_short.left+this.thin_short.width/2)
+			style.width=this.width="0"
+		
+		} else{
+			style.left=(this.left_box.left+this.left_box.width)
+			style.width=this.width=(this.right_box.left-this.left_box.left-this.left_box.width)
+			style.top=(this.thin_short.tops+this.thin_short.height/2)
+			style.height=this.height="0"
+		
+		}
+		
+		
+	}
+
+	$(this.div).animate(style,speed)
+	}
 	
 	
+	
+	
+	
+	
+	
+	
+		
 	//---------------Parsing input----------------
 
 	function parseBlock(blockarray) {
-		var position = "a1"
-		var children = new Array()
-		var size = "1x1"
-		var css_style = ""
-		var special_style = ""
+		 position = "a1"
+		 children = new Array()
+		 size = "1x1"
+		 css_style = ""
+		 special_style = ""
 		//For each property
 		for (var i = 1; i < blockarray.length; i++) {
 			property = blockarray[i]
@@ -305,9 +404,34 @@ function mesmerize(canvas, input) {
 			console.log("new Block (" + blockarray[0] + ", " + x + ", " + y + ", " + children + ", " + css_style + ", " + special_style + ")")
 		}
 		//create a new block object from the properties
-		block = new Block(blockarray[0], x, y, h, w, children, css_style, special_style)
-		return block
+		
+		return new Block(blockarray[0], x, y, h, w, children, css_style, special_style)
 	}
+	
+	function parseArrows(arrowarray, block) {
+blocks=block.blocks
+sequential_arrows=new Array()
+
+		for (var j = 2; j < arrowarray.length; j++) {
+	
+		from=null
+		to=null
+		for (var i = 0; i < blocks.length; i++) {
+	
+		if (blocks[i].id===arrowarray[j-1]){from=blocks[i]}
+		else if(blocks[i].id===arrowarray[j]){to=blocks[i]}
+		}
+		if (from===null) {console.log("I coudn't find a box called '"+arrowarray[j-1]+"'.")}
+		else if (to===null) {console.log("I coudn't find a box called '"+arrowarray[j]+"'.")}
+		else{
+		if (debug){console.log("Creating an arrow from "+from.id+" to "+to.id)}
+
+	sequential_arrows.push(new Arrow(from, to, block))
+		}
+		}
+		return sequential_arrows
+	}
+	
 	
 	var root = parseBlock(plainobjects)
 	var current=root

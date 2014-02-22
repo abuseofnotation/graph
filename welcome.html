@@ -1,17 +1,44 @@
-<!DOCTYPE html
-  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
   <head>
   <title>Graph</title>
  
-  <!-- <script type="text/javascript" src="jquery.min.js"></script>-->
-   <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="graph.css">
-  <script type="text/javascript" src="graph.js"></script>
+   <script type="text/javascript" src="jquery-1.10.2.min.js"></script>
+   <!--<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>-->
+
+
+  <link rel="stylesheet" type="text/css" href="jsoneditor-min.css">
+  <script type="text/javascript" src="jsoneditor-min.js"></script>
+  
+   <link rel="stylesheet" type="text/css" href="graph.css">
+  <script type="text/javascript" src="src/input_analysis.js"></script>
+   <script type="text/javascript" src="src/initial_render.js"></script>
+    <script type="text/javascript" src="src/drawing.js"></script>
+   <script type="text/javascript" src="src/main.js"></script>	
   </head>
   <body>
   
   <!--"When you have a complex system you cannot show everything at once.  -->
 
+    <script type="text/javascript" >
+$(document).ready(function () {
+	//draw diagrams in info divs
+	$(".info").each(function () {
+		mesmerize($(this), $.parseJSON($(this).html()))
+	})
+
+});
+	
+	
+	
+	
+	
+	
+	
+        
+    </script>
+	
+	
+	
   
 <h1>First steps</h1>
 <p>One diagram is defined by a <a href="http://www.json.org/" target="_blank">JSON</a> array. The array contains the title of the diagram
@@ -66,6 +93,52 @@
  ["C3", "C3"]
 ]</div>
 
+<h1>Connecting boxes</h1>
+  <p>If two boxes are next to each other you can indicate that they are connected. </p>
+  <p>To do that, use the <p>connect</b> reserved word, followed by the names of the boxes.</p>
+  <p>The connection is visualized in the form of an arrow.</p>
+  
+  <h3>Input:</h3>
+  <pre>
+["Connecting boxes",
+ ["Box 1", "A1"],
+ ["Box 2", "A2"],
+ ["connect", "Box 1", "Box 2"]
+]
+</pre>
+ <h3>Output:</h3>
+ <div class="info">
+["Connecting boxes",
+ ["Box 1", "A1"],
+ ["Box 2", "A2"],
+ ["connect", "Box 1", "Box 2"]
+]
+</div>
+
+ <p>You can use this to connect multiple boxes.</p>
+  
+  <h3>Input:</h3>
+  <pre>
+["Connecting Multiple Boxes",
+ ["Box 1", "A1"],
+ ["Box 2", "C1"],
+ ["Box 3", "C2"],
+ ["Box 4", "D2"],
+ ["connect", "Box 1", "Box 2", "Box 3", "Box 4"]
+]
+</pre>
+ <h3>Output:</h3>
+ <div class="info">
+["Connecting Multiple Boxes",
+ ["Box 1", "A1"],
+ ["Box 2", "C1"],
+ ["Box 3", "C2"],
+ ["Box 4", "D2"],
+ ["connect", "Box 1", "Box 2", "Box 3", "Box 4"]
+]
+</div>
+
+
 <h1>Setting Box Size</h1>
   <p>The size of the board is calculated automatically and can go up to 9.</p>
   
@@ -75,7 +148,8 @@
  ["2X2", "A1", "2x2"],
  ["1X1", "C1"],
  ["1X2", "C2", "1X2"],
- ["2X1", "A3", "2X1"]
+ ["2X1", "A3", "2X1"],
+ ["connect", "2X1", "2X2", "1X1", "1X2"]
 ]
 </pre>
  <h3>Output:</h3>
@@ -84,9 +158,11 @@
  ["2X2", "A1", "2x2"],
  ["1X1", "C1"],
  ["1X2", "C2", "1X2"],
- ["2X1", "A3", "2X1"]
+ ["2X1", "A3", "2X1"],
+ ["connect", "2X1", "2X2", "1X1", "1X2"]
 ]
 </div>
+
 
 
 <h1>Adding Children</h1>
@@ -97,7 +173,8 @@
  ["A Parent", "a1",
    ["Child 1", "a2"],
    ["Child 2", "b2"],
-   ["Child 3", "c2"]
+   ["Child 3", "c2"],
+   ["connect", "Child 1", "Child 2", "Child 3"]
  ]
 
 ]
@@ -107,7 +184,8 @@
  ["A Parent", "a2", 
    ["Child 1", "a2"],
    ["Child 2", "b2"],
-   ["Child 3", "c2"]
+   ["Child 3", "c2"],
+   ["connect", "Child 1", "Child 2", "Child 3"]
  ]
 
 ]
@@ -211,60 +289,127 @@ styling properties which are defined as constants in Graph: <b>important</b> and
  ["Rounded and Important Box", "B2", "rounded", "important"]
 ]  </div>
 
-
-
-
-
- <h1>Your Turn</h1>
-<p>Start typing to visualize the graphic.<p>
-
-  <h3>Input:</h3>
-
-<textarea id="json" class="json" >
-["root", 
- ["block", "a1"],
- ["block2", "a2"]
-]
-</textarea>
-
-  <h3>Output:</h3>
-<div class="jsoninput"></div>
   <h1>Examples</h1>
    <h3>Input:</h3>
  <pre>
- ["mBS ", 
- ["Developer Workstation", "a1", "2x3",
-  ["mToolkit","a1", "3x1"],
-  ["mbProfiler", "a2", "3x1"],
-  ["System Plugins","a3", "3x1"]
+["mBS ", 
+ ["<i>Develop:</i> Developer Workstation", "a1", "2x3",
+  ["mToolkit","a1", "2x1"],
+  ["mbProfiler", "a2", "2x1"],
+  ["System Plugins","a3", "2x1"],
+  ["Eclipse IDE", "c1", "1x3"],
+  ["connect", "Eclipse IDE", "mToolkit"],
+  ["connect", "Eclipse IDE", "mbProfiler"],
+  ["connect", "Eclipse IDE", "System Plugins"]
  ],
- ["Home Gateway", "c1", "2x3",
-  ["mBS", "2X3",
+ ["<i>Deploy:</i> Home Gateway", "c1", "2x3",
+  ["OSGi Platform", "2X2",
    ["mBS Modules","a1","1X2"],
-   ["OSGi Platform","b1", "1x2"]
+   ["OSGi Framework","b1", "1x2"]
   ],
-  ["Java VM", "1X3", "c1"]
+  ["Java Virtual Machine", "1X2", "c1"],
+  ["mBSA", "3X1", "a3", "minor"],
+  ["connect", "mBSA", "Java Virtual Machine"],
+  ["connect", "mBSA", "OSGi Platform"],
+  ["connect", "Java Virtual Machine", "OSGi Platform"]
  ],
- ["Runtime Validator", "a4", "4x1", "minor"]
+ ["<i>Validate:</i> Runtime Validator", "a4", "4x1", "minor"],
+ ["connect", "Develop: Developer Workstation", "Deploy: Home Gateway", "Validate: Runtime Validator"]
 ]
 </pre>
    <h3>Output:</h3>
  <div class="info">
 ["mBS ", 
- ["Developer Workstation", "a1", "2x3",
-  ["mToolkit","a1", "3x1"],
-  ["mbProfiler", "a2", "3x1"],
-  ["System Plugins","a3", "3x1"]
+ ["<i>Develop:</i> Developer Workstation", "a1", "2x3",
+  ["mToolkit","a1", "2x1"],
+  ["mbProfiler", "a2", "2x1"],
+  ["System Plugins","a3", "2x1"],
+  ["Eclipse IDE", "c1", "1x3"],
+  ["connect", "Eclipse IDE", "mToolkit"],
+  ["connect", "Eclipse IDE", "mbProfiler"],
+  ["connect", "Eclipse IDE", "System Plugins"]
  ],
- ["Home Gateway", "c1", "2x3",
-  ["mBS", "2X3",
+ ["<i>Deploy:</i> Home Gateway", "c1", "2x3",
+  ["OSGi Platform", "2X2",
    ["mBS Modules","a1","1X2"],
-   ["OSGi Platform","b1", "1x2"]
+   ["OSGi Framework","b1", "1x2"]
   ],
-  ["Java VM", "1X3", "c1"]
+  ["Java Virtual Machine", "1X2", "c1"],
+  ["mBSA", "3X1", "a3", "minor"],
+  ["connect", "mBSA", "Java Virtual Machine"],
+  ["connect", "mBSA", "OSGi Platform"],
+  ["connect", "Java Virtual Machine", "OSGi Platform"]
  ],
- ["Runtime Validator", "a4", "4x1", "minor"]
+ ["<i>Validate:</i> Runtime Validator", "a4", "4x1", "minor"],
+ ["connect", "Develop: Developer Workstation", "Deploy: Home Gateway", "Validate: Runtime Validator"]
 ]
 </div>
+
+
+   <h3>Input:</h3>
+ <pre>
+["Smart Home SDK", 
+ ["Home Automation Manager","a1","1x2"],
+ ["Web Portal","a3","1x2"],
+ ["Home Device Manager","b1", "1x7", "important"],
+ ["ZigBee","c1"],
+ ["ZWave","c2"],
+ ["Cameras","c3"],
+ ["X10","c4"],
+ ["KNX","c5"],
+ ["DECT","c6"],
+ ["wMBus","c7"],
+ ["ZigBee Device","d1", "rounded", "minor"],
+ ["ZWave Device","d2", "rounded", "minor"],
+ ["Camera Device","d3", "rounded", "minor"],
+ ["X10 Device","d4", "rounded", "minor"],
+ ["KNX Device","d5", "rounded", "minor"],
+ ["DECT Device","d6", "rounded", "minor"],
+ ["wMBus Device","d7", "rounded", "minor"],
+ ["connect", "Home Device Manager", "ZigBee", "ZigBee Device"],
+ ["connect", "Home Device Manager", "ZWave", "ZWave Device"],
+ ["connect", "Home Device Manager", "Cameras", "Camera Device"],
+ ["connect", "Home Device Manager", "X10", "X10 Device"],
+ ["connect", "Home Device Manager", "KNX", "KNX Device"],
+ ["connect", "Home Device Manager", "DECT", "DECT Device"],
+ ["connect", "Home Device Manager", "wMBus", "wMBus Device"]
+]
+</pre>
+   <h3>Output:</h3>
+ <div class="info">
+["Smart Home SDK", 
+ ["Home Automation Manager","a1","1x2"],
+ ["Web Portal","a3","1x2"],
+ ["Home Device Manager Remote API","a5","1x2"],
+ ["Home Device Manager","b1", "2x7", "important",
+  ["Home Device Admin","A1"],
+  ["Home Zone Admin","A2"],
+  ["Device Objects", "many", "B1","1x2"],
+  ["connect", "Home Zone Admin", "Home Device Admin","Device Objects"]
+ ],
+ ["ZigBee","d1"],
+ ["ZWave","d2"],
+ ["Cameras","d3"],
+ ["X10","d4"],
+ ["KNX","d5"],
+ ["DECT","d6"],
+ ["wMBus","d7"],
+ ["ZigBee Device","e1", "rounded", "minor"],
+ ["ZWave Device","e2", "rounded", "minor"],
+ ["Camera Device","e3", "rounded", "minor"],
+ ["X10 Device","e4", "rounded", "minor"],
+ ["KNX Device","e5", "rounded", "minor"],
+ ["DECT Device","e6", "rounded", "minor"],
+ ["wMBus Device","e7", "rounded", "minor"],
+ ["connect", "Home Device Manager", "ZigBee", "ZigBee Device"],
+ ["connect", "Home Device Manager", "ZWave", "ZWave Device"],
+ ["connect", "Home Device Manager", "Cameras", "Camera Device"],
+ ["connect", "Home Device Manager", "X10", "X10 Device"],
+ ["connect", "Home Device Manager", "KNX", "KNX Device"],
+ ["connect", "Home Device Manager", "DECT", "DECT Device"],
+ ["connect", "Home Device Manager", "wMBus", "wMBus Device"]
+]
+</div>
+
 </form> 
 </body>

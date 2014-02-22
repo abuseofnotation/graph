@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <head>
+  <title>Graph</title>
+ 
+   <script type="text/javascript" src="jquery-1.10.2.min.js"></script>
+   <!--<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>-->
+
+
+  <link rel="stylesheet" type="text/css" href="jsoneditor-min.css">
+  <script type="text/javascript" src="jsoneditor-min.js"></script>
+  
+   <link rel="stylesheet" type="text/css" href="graph.css">
+  <script type="text/javascript" src="src/input_analysis.js"></script>
+   <script type="text/javascript" src="src/initial_render.js"></script>
+    <script type="text/javascript" src="src/drawing.js"></script>
+   <script type="text/javascript" src="src/main.js"></script>	
+  </head>
+  <body>
+  
+  <!--"When you have a complex system you cannot show everything at once.  -->
+
+    <script type="text/javascript" >
+$(document).ready(function () {
+	
+	// create the editor
+        var container = document.getElementById("input");
+        var editor = new jsoneditor.JSONEditor(container);
+
+template=["root", 
+ ["block", "a1"],
+ ["block2", "a2"],
+ ["connect", "block", "block2"]
+]
+editor.set(template)
+mesmerize($('#output'), template)
+	
+	$("#input").keyup(function () {
+		input = null
+		input = editor.get()
+		if (input != null) {
+			mesmerize($('#output'), input)
+		}
+	});
+});
+   
+    </script>
+	<div id="output"></div>
+	<div id="input"></div>
+
+
+</body>
